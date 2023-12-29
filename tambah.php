@@ -35,29 +35,9 @@
 	<form action="tambah-proses.php" method="post">
 		<table cellpadding="3" cellspacing="0">
 			<tr>
-				<td>NIS</td>
-				<td>:</td>
 				<td><textarea name="_a" id="editor"></textarea></td>
 			</tr>
-			<tr>
-				<td>Kelas</td>
-				<td>:</td>
-				<td><select name="_b"> 
-					<option>Select</option>
-					<?php
-					include('koneksi.php');
-					$q=mysqli_query($koneksi, "SELECT * FROM b");
-					while($d=mysqli_fetch_array($q))
-					{
-						echo "<option value='$d[b0]'> $d[b1] </option>";
-					}
-					?>
-				</select>
-			</td>
-		</tr>
 		<tr>
-			<td>&nbsp;</td>
-			<td></td>
 			<td><input type="submit" name="tambah" value="Tambah"></td>
 		</tr>
 	</table>
