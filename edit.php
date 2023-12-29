@@ -28,27 +28,34 @@
     <script>
     $(document).ready(function() {
         function autoSave() {
-            console.log("Auto-save triggered");  // Log to console to verify if autosave is triggered
+            console.log("Auto-save triggered");
             
             const formData = {
                 'id': $("input[name='id']").val(),
-                '_a': CKEDITOR.instances.editor.getData(),  // Get data from CKEditor
-                '_b': $("select[name='_b']").val()
+                '_a': CKEDITOR.instances.editor.getData(),
             };
 
-            console.log("Form Data:", formData);  // Log the form data
+            console.log("Form Data:", formData);
             
             $.post("edit-proses.php", formData, function(response) {
-                console.log("Data saved:", response);  // Log the response from server
+                console.log("Data saved:", response);
             }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.log("Error:", textStatus, errorThrown);  // Log any errors
+                console.log("Error:", textStatus, errorThrown);
             });
         }
 
-        setInterval(autoSave, 10000);  // Autosave every 10 seconds.
+        setInterval(autoSave, 10000);
         
-        // Initialize CKEditor for the textarea with ID 'editor'
-        CKEDITOR.replace('editor');
+        // CKEditor initialization with tab indentation functionality
+        CKEDITOR.replace('editor', {
+            tabSpaces: 4,  // 4 spaces for each tab press
+            onKeyDown: function(event) {
+                if (event.data.keyCode === CKEDITOR.CTRL + 9) {  // Ctrl + Tab
+                    event.cancel();
+                    this.insertText(new Array(this.config.tabSpaces + 1).join(' '));
+                }
+            }
+        });
     });
     </script>
 </head>
