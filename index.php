@@ -77,7 +77,7 @@ $(document).ready(function(){
     });
 
     // Pagination
-    var rowsShown = 10;
+    var rowsShown = 1;
     var rowsTotal = $('table tbody tr').length;
     var numPages = rowsTotal/rowsShown;
     for(i = 0;i < numPages;i++) {
