@@ -46,9 +46,10 @@
 <!-- Pagination div -->
 <div id="pagination"></div>
 
+<!-- To change the number of table pages (i.e., to limit the number of rows shown per page), you can modify the itemsPerPage constant in your JavaScript code. -->
 <script>
 $(document).ready(function() {
-    const itemsPerPage = 5;
+    const itemsPerPage = 1;
     let currentPage = 1;
     let totalItems;
 
