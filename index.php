@@ -23,7 +23,6 @@
     <!-- Main JavaScript files -->
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
-
 </head>
 <body>
 
@@ -33,11 +32,15 @@
 <p><a href="tambah.php">Tambah Data</a></p>
 
 <table cellpadding="5" cellspacing="0" border="1" id="dataTable">
-    <tr bgcolor="#CCCCCC">
-        <th>No</th>
-        <th>Data</th>
-        <th>Option</th>
-    </tr>
+    <thead>
+        <tr bgcolor="#CCCCCC">
+            <th>No</th>
+            <th>Data</th>
+            <th>Option</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody">
+    </tbody>
 </table>
 
 <!-- Pagination div -->
@@ -45,36 +48,55 @@
 
 <script>
 $(document).ready(function() {
+    const itemsPerPage = 5;
+    let currentPage = 1;
+    let totalItems;
+
     function fetchData(searchTerm = '') {
         $.ajax({
             url: 'search_data.php',
             type: 'POST',
-            data: { searchTerm: searchTerm },
+            data: { searchTerm: searchTerm, page: currentPage, itemsPerPage: itemsPerPage },
             dataType: 'json',
             success: function(data) {
+                totalItems = data.totalItems;
                 let tableContent = '';
-                data.forEach((item, index) => {
+                data.items.forEach((item, index) => {
                     tableContent += `
                         <tr>
-                            <td>${index + 1}</td>
+                            <td>${(currentPage - 1) * itemsPerPage + index + 1}</td>
                             <td>${item.a1}</td>
                             <td><a href="edit.php?id=${item.a0}">Edit</a> / <a href="hapus.php?id=${item.a0}" onclick="return confirm('Yakin?')">Hapus</a></td>
                         </tr>
                     `;
                 });
-                $('#dataTable').html(tableContent);
+                $('#tableBody').html(tableContent);
+                updatePagination();
             }
         });
     }
 
-    // Fetch data on page load (without search term)
     fetchData();
 
-    // Handle search input changes
     $('#searchInput').on('input', function() {
         const searchTerm = $(this).val();
+        currentPage = 1;
         fetchData(searchTerm);
     });
+
+    function updatePagination() {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        let paginationContent = '';
+        for (let i = 1; i <= totalPages; i++) {
+            paginationContent += `<button onclick="changePage(${i})">${i}</button>`;
+        }
+        $('#pagination').html(paginationContent);
+    }
+
+    window.changePage = function(page) {
+        currentPage = page;
+        fetchData();
+    };
 });
 </script>
 
