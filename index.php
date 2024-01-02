@@ -27,8 +27,10 @@
 <body>
 
 <!-- Input field for searching -->
-<input type="text" id="searchInput" placeholder="Search for data...">
-
+<input type="text" id="searchInput" placeholder="Search...">
+<form method="post" action="">
+    <input type="text" placeholder="Advanced search..." id="search" name="search" required>
+</form>
 <p><a href="tambah.php">Tambah Data</a></p>
 
 <table cellpadding="5" cellspacing="0" border="1" id="dataTable">
@@ -100,11 +102,6 @@ $(document).ready(function() {
     };
 });
 </script>
-<form method="post" action="">
-    <label for="search">Search:</label>
-    <input type="text" id="search" name="search" required>
-    <input type="submit" value="Search">
-</form>
 <?php
 include 'db_connection.php';
 
