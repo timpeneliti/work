@@ -121,7 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $content = strtolower($row['a1']);
 
             if (strpos($content, $search) !== false) {
-                echo $row["a1"] . "<br>"; // Display the matched content without "Content:"
+                echo "===========================================================================" . $row["a1"] . "<br>"; // Display the matched content with "Content:" prefix
                 $found = true;
             }
         }
