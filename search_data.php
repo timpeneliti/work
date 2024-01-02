@@ -14,19 +14,32 @@ $page = isset($_POST['page']) ? $_POST['page'] : 1;
 $itemsPerPage = isset($_POST['itemsPerPage']) ? $_POST['itemsPerPage'] : 5;
 $offset = ($page - 1) * $itemsPerPage;
 
-$searchTerm = isset($_POST['searchTerm']) ? $_POST['searchTerm'] : '';
+$searchTerm = isset($_POST['searchTerm']) ? strtolower($_POST['searchTerm']) : '';
 
-$sql = "SELECT * FROM a WHERE a1 LIKE '%$searchTerm%' LIMIT $offset, $itemsPerPage";
+$sql = "SELECT * FROM a";
 $result = $conn->query($sql);
 
 $data = [];
+$found = false;
+
 while($row = $result->fetch_assoc()) {
-    $data[] = $row;
+    $content = strtolower($row['a1']); // Convert content to lowercase
+
+    if (strpos($content, $searchTerm) !== false) { // Check for substring match
+        $found = true;
+        $data[] = $row;
+    }
 }
 
-$totalItemsSql = "SELECT COUNT(*) as count FROM a WHERE a1 LIKE '%$searchTerm%'";
-$totalItemsResult = $conn->query($totalItemsSql);
-$totalItems = $totalItemsResult->fetch_assoc()['count'];
+if (!$found) {
+    echo json_encode(['items' => [], 'totalItems' => 0]);
+    exit();
+}
+
+// Slice the data based on pagination
+$data = array_slice($data, $offset, $itemsPerPage);
+
+$totalItems = count($data);
 
 $response = [
     'items' => $data,
