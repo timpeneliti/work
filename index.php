@@ -82,7 +82,7 @@ $conn->close();
 
 <script>
 $(document).ready(function() {
-    const itemsPerPage = 5;
+    const itemsPerPage = 1;
     let currentPage = 1;
     let totalItems;
 
