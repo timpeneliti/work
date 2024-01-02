@@ -25,44 +25,10 @@
     <script src="assets/js/bootstrap.min.js"></script>
 </head>
 <body>
-<?php
-include 'db_connection.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $search = isset($_POST['search']) ? strtolower($_POST['search']) : '';
+<!-- Input field for searching -->
+<input type="text" id="searchInput" placeholder="Search for data...">
 
-    $sql = "SELECT a1 FROM a";
-    $result = $conn->query($sql);
-
-    if ($result) {
-        $found = false;
-
-        while ($row = $result->fetch_assoc()) {
-            $content = strtolower($row['a1']);
-
-            if (strpos($content, $search) !== false) {
-                echo $row["a1"] . "<br>"; // Display the matched content without "Content:"
-                $found = true;
-            }
-        }
-
-        if (!$found) {
-            echo "No results found";
-        }
-    } else {
-        echo "Error: " . $conn->error;
-    }
-}
-
-$conn->close();
-?>
-
-<form method="post" action="">
-    <label for="search">Search:</label>
-    <input type="text" id="search" name="search" required>
-    <input type="submit" value="Search">
-</form>
-<!-- Link to add data -->
 <p><a href="tambah.php">Tambah Data</a></p>
 
 <table cellpadding="5" cellspacing="0" border="1" id="dataTable">
@@ -80,17 +46,18 @@ $conn->close();
 <!-- Pagination div -->
 <div id="pagination"></div>
 
+<!-- To change the number of table pages (i.e., to limit the number of rows shown per page), you can modify the itemsPerPage constant in your JavaScript code. -->
 <script>
 $(document).ready(function() {
     const itemsPerPage = 1;
     let currentPage = 1;
     let totalItems;
 
-    function fetchData() {
+    function fetchData(searchTerm = '') {
         $.ajax({
             url: 'search_data.php',
             type: 'POST',
-            data: { page: currentPage, itemsPerPage: itemsPerPage },
+            data: { searchTerm: searchTerm, page: currentPage, itemsPerPage: itemsPerPage },
             dataType: 'json',
             success: function(data) {
                 totalItems = data.totalItems;
@@ -111,6 +78,12 @@ $(document).ready(function() {
     }
 
     fetchData();
+
+    $('#searchInput').on('input', function() {
+        const searchTerm = $(this).val();
+        currentPage = 1;
+        fetchData(searchTerm);
+    });
 
     function updatePagination() {
         const totalPages = Math.ceil(totalItems / itemsPerPage);
